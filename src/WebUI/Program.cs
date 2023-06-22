@@ -9,9 +9,15 @@ using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Serilog;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using WebUI.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
-AppSettings appSettings = builder.Configuration.GetSection("App").Get<AppSettings>();
+
+var config = builder.Configuration;
+AppSettings appSettings = config.GetSection("App").Get<AppSettings>();
+JwtSettings jwtSettings = config.GetSection("JwtSettings").Get<JwtSettings>();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
@@ -19,7 +25,10 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 {
     containerBuilder.RegisterModule<ApplicationModule>();
 
+    containerBuilder.RegisterType<ConfigureSwaggerOptions>().As<IConfigureOptions<SwaggerGenOptions>>();
+
     containerBuilder.RegisterInstance(appSettings).As<IAppSettings>().SingleInstance();
+    containerBuilder.RegisterInstance(jwtSettings).As<IJwtSettings>().SingleInstance();
 
     containerBuilder.RegisterAutoMapper(true, typeof(ApplicationModule).Assembly);
 
@@ -31,15 +40,13 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
     containerBuilder.RegisterMediatR(mediatrConfiguration);
 });
 
+builder.Services.ConfigureIdentity();
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(config.GetConnectionString(AppConsts.ConnectionStringName)));
+
+builder.Services.ConfigureJwtAuthentication(jwtSettings);
+
 builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddValidatorsFromAssemblyContaining<StockNameValidator>();
-
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString(AppConsts.ConnectionStringName)));
 
 var logger = new LoggerConfiguration()
   .ReadFrom.Configuration(builder.Configuration)
@@ -47,6 +54,12 @@ var logger = new LoggerConfiguration()
   .CreateLogger();
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddValidatorsFromAssemblyContaining<Application.User.Validators.RegisterUserRequestValidator>();
 
 var app = builder.Build();
 
@@ -59,6 +72,13 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseHttpStatusCodeExceptionMiddleware();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
+
+app.DbMigrate();
 
 app.Run();

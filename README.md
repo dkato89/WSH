@@ -37,8 +37,8 @@ Lehetősége van docker containerben futtatni az alkalmazást. Ehhez a következ
 * [ASP.NET Core 7](https://docs.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-7.0)
 * [Entity Framework Core 7](https://docs.microsoft.com/en-us/ef/core/)
 * [Angular 13](https://angular.io/)
+* [Autofac](https://autofac.org/)
 * [MediatR](https://github.com/jbogard/MediatR)
 * [AutoMapper](https://automapper.org/)
 * [FluentValidation](https://fluentvalidation.net/)
 * [Docker](https://www.docker.com/)
-
