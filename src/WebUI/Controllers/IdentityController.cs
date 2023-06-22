@@ -12,6 +12,7 @@ namespace WebUI.Controllers
         [HttpPost("Login")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(HttpErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(HttpErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
             var response = await Send(model);
@@ -22,6 +23,7 @@ namespace WebUI.Controllers
         [HttpPost("RegisterUser")]
         [ProducesResponseType(typeof(RegisterUserResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(HttpErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(HttpErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest model)
         {
             var response = await Send(model);

@@ -1,18 +1,32 @@
 ﻿using Application.ExchangeRate.Models;
+using Domain.Exceptions;
+using FluentValidation;
 using MediatR;
+using Provider.MNB;
+using Provider.MNB.Types;
 
 namespace Application.ExchangeRate.Queries;
 
-public class ExchangeRateListQueryHandler : IRequestHandler<ExchangeRateListQuery, List<ExchangeRateViewModel>>
+public class ExchangeRateListQueryHandler : IRequestHandler<ExchangeRateListQuery, IEnumerable<ExchangeRateDay>>
 {
-    public Task<List<ExchangeRateViewModel>> Handle(ExchangeRateListQuery request, CancellationToken cancellationToken)
-    {
-        var result = new List<ExchangeRateViewModel>
-        {
-            new ExchangeRateViewModel { Date = DateTime.Today },
-            new ExchangeRateViewModel { Date = DateTime.Today.AddDays(-1) }
-        };
+    private readonly IValidator<ExchangeRateListQuery> _validator;
+    private readonly IMNBExchangeRateService _exchangeRateService;
 
-        return Task.FromResult(result);
+    public ExchangeRateListQueryHandler(IMNBExchangeRateService exchangeRateService, IValidator<ExchangeRateListQuery> validator)
+    {
+        _exchangeRateService = exchangeRateService;
+        _validator = validator;
+    }
+
+    public async Task<IEnumerable<ExchangeRateDay>> Handle(ExchangeRateListQuery request, CancellationToken cancellationToken)
+    {
+        if (request == null)
+            throw new RequestEmptyException();
+
+        _validator.ValidateAndThrow(request);
+
+        var result = await _exchangeRateService.GetExchangeRatesAsync(request.From, request.To, request.Currencies.ToArray());
+
+        return result;
     }
 }

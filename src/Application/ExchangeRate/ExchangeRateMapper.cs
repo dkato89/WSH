@@ -2,7 +2,7 @@
 
 namespace Application.ExchangeRate;
 
-internal class ExchangeRateMapper : Profile
+public class ExchangeRateMapper : Profile
 {
     public ExchangeRateMapper()
     {

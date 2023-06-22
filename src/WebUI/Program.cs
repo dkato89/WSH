@@ -12,6 +12,7 @@ using Serilog;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebUI.Configurations;
+using Provider.MNB;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +31,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
     containerBuilder.RegisterInstance(appSettings).As<IAppSettings>().SingleInstance();
     containerBuilder.RegisterInstance(jwtSettings).As<IJwtSettings>().SingleInstance();
 
-    containerBuilder.RegisterAutoMapper(true, typeof(ApplicationModule).Assembly);
+    containerBuilder.RegisterAutoMapper(true, typeof(ApplicationModule).Assembly, typeof(MNBProviderMapper).Assembly);
 
     var mediatrConfiguration = MediatRConfigurationBuilder
             .Create(typeof(ApplicationModule).Assembly)
