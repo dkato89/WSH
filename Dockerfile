@@ -14,7 +14,6 @@ RUN npm run-script build
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
-COPY ["src/providers/Provider.MNB/Provider.MNB.csproj", "src/Provider.MNB/"]
 COPY ["src/Application/Application.csproj", "src/Application/"]
 COPY ["src/Common/Common.csproj", "src/Common/"]
 COPY ["src/Domain/Domain.csproj", "src/Domain/"]
