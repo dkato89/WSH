@@ -13,6 +13,8 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebUI.Configurations;
 using Provider.MNB;
+using WebUI.Security;
+using Common.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,8 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
     containerBuilder.RegisterInstance(appSettings).As<IAppSettings>().SingleInstance();
     containerBuilder.RegisterInstance(jwtSettings).As<IJwtSettings>().SingleInstance();
+
+    containerBuilder.RegisterType<AspUserDataProvider>().As<IUserDataProvider>();
 
     containerBuilder.RegisterAutoMapper(true, typeof(ApplicationModule).Assembly, typeof(MNBProviderMapper).Assembly);
 
@@ -62,10 +66,14 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddValidatorsFromAssemblyContaining<Application.User.Validators.RegisterUserRequestValidator>();
 
+builder.Services.ConfCors();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors("CorsPolicy");
+
     app.UseSwagger();
     app.UseSwaggerUI();
 }

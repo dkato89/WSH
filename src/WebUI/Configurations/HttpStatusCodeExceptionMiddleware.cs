@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Domain.Exceptions;
+using Domain.Models;
 
 namespace WebUI.Configurations;
 
@@ -94,24 +95,17 @@ public class HttpStatusCodeExceptionMiddleware
 
     private string CreateResponseMessage(Exception ex, bool? skipErrorHandler = null)
     {
-        var response = new HttpErrorResponse { Error = ex.Message, SkipErrorHandler = skipErrorHandler };
+        var response = new AppHttpErrorResponse { Error = ex.Message, SkipErrorHandler = skipErrorHandler };
 
         return JsonConvert.SerializeObject(response, new JsonSerializerSettings { ContractResolver = Common.Helpers.JsonSerializerSettings.GetContractResolver() });
     }
 
     private string CreateResponseMessage(string message, object details = null, bool? skipErrorHandler = null)
     {
-        var response = new HttpErrorResponse { Error = message, Details = details, SkipErrorHandler = skipErrorHandler };
+        var response = new AppHttpErrorResponse { Error = message, Details = details, SkipErrorHandler = skipErrorHandler };
 
         return JsonConvert.SerializeObject(response, new JsonSerializerSettings { ContractResolver = Common.Helpers.JsonSerializerSettings.GetContractResolver() });
     }
 }
 
-public class HttpErrorResponse
-{
-    public string Error { get; set; }
 
-    public object Details { get; set; }
-
-    public bool? SkipErrorHandler { get; set; }
-}

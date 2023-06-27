@@ -1,0 +1,18 @@
+.app-main-container {
+    background-image: linear-gradient(120deg, #1F437B 0, #010022 83%);
+    // background: linear-gradient(90deg, rgba(68,68,71,1) 28%, rgba(0,0,0,1) 100%);
+    color: white;
+
+    .app-child-container {
+        // min-width: 900px;
+        width: 95%;
+        min-height: 100vh;
+
+        .app-router-outlet {
+            background-color: #ECEEF7;
+            border-top-right-radius: 0.95rem;
+            border-bottom-right-radius: 0.95rem;
+            border-bottom-left-radius: 0.95rem;
+        }
+    }
+}

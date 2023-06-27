@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+@import "primeicons/primeicons.css";
+@import "./assets/primeng/primeng.button.scss";
+@import "./assets/primeng/primeng.card.scss";
+@import "./assets/primeng/primeng.dialog.scss";
+@import "./assets/primeng/primeng.inputnumber.scss";
+
+.w-100 {
+    width: 100% !important;
+}
+
+.bg-transparent-10 {
+    background-color: rgba(255, 255, 255, 0.1);
+}

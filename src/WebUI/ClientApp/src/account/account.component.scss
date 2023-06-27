@@ -1,0 +1,19 @@
+.login-page {
+    min-height: 100vh;
+    background-image: linear-gradient(120deg, #1F437B 0, #010022 83%);
+    color: white;
+}
+
+.login-box {
+    width: 500px;
+
+    .card {
+        border-radius: 0.95rem;
+
+        .card-body {
+            h3 {
+                color: black;
+            }
+        }
+    }
+}

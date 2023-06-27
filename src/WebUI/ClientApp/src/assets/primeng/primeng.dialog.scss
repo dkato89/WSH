@@ -1,0 +1,31 @@
+.p-dialog-mask {
+    align-items: flex-start !important;
+}
+
+.p-dialog {
+    width: 90%;
+    margin: 1.75rem auto;
+}
+
+@media (min-width: 576px) {
+    .p-dialog {
+        max-width: 500px;
+    }
+}
+
+@media (min-width: 992px) {
+    .p-dialog-lg {
+        max-width: 800px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .p-dialog-xl {
+        max-width: 1200px;
+    }
+}
+
+.p-dialog-w-90 {
+    max-width:unset !important;
+    
+}

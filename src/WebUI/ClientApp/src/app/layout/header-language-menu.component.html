@@ -1,0 +1,4 @@
+<span (click)="langMenu.toggle($event)" class="me-2 btn btn-lg btn-icon text-white bg-transparent-10">
+  <i class="{{currentLanguage?.icon}}" style="display: inline-block"></i> {{currentLanguage?.displayName}}
+</span>
+<p-menu #langMenu [popup]="true" [model]="items" appendTo="body" baseZIndex="1000"></p-menu>

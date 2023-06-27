@@ -1,0 +1,11 @@
+<div class="d-flex menu-bar">
+  <ng-container *ngFor="let item of menuItems">
+    <a class="btn d-lg-none" *ngIf="isMenuItemVisible(item) && item.route && !item.children" [routerLink]="item.route" [class.active-menu]="item.isActive" pTooltip="{{item.label}}" tooltipPosition="bottom">
+      <i class="{{item.icon}}"></i>
+    </a>
+
+    <a class="btn d-none d-lg-inline-block" *ngIf="isMenuItemVisible(item) && item.route && !item.children" [routerLink]="item.route" [class.active-menu]="item.isActive">
+      <i class="{{item.icon}}"></i> {{ item.label | transloco }}
+    </a>
+  </ng-container>
+</div>

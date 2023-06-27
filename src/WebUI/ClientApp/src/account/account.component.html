@@ -1,3 +1,14 @@
-Account teteje
-<!-- <router-outlet></router-outlet> -->
-Account alja
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh">
+    <div class="login-box">
+      <account-header></account-header>
+      <div class="card mt-3">
+        <div class="card-body login-card-body text-white">
+          <router-outlet></router-outlet>
+        </div>
+        <div class="card-footer">
+          <account-languages></account-languages>
+        </div>
+      </div>
+      <account-footer></account-footer>
+    </div>
+  </div>

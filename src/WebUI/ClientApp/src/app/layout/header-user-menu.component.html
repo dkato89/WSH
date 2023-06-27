@@ -1,0 +1,4 @@
+<p-menu #userMenu [popup]="true" [model]="items" appendTo="body" baseZIndex="1000"></p-menu>
+<span (click)="userMenu.toggle($event)" class="btn btn-lg btn-icon bg-transparent-10" >
+    <i class="pi pi-user text-white"></i>
+</span>

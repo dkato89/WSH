@@ -13,9 +13,6 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.21.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ExchangeRate\Commands\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Provider.MNB\Provider.MNB.csproj" />

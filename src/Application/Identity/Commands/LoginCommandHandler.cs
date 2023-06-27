@@ -12,67 +12,66 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Application.Identity.Commands
+namespace Application.Identity.Commands;
+
+public class LoginCommandHandler : BaseCommandHandler<LoginRequest, TokenResult>
 {
-    internal class LoginCommandHandler : BaseCommandHandler<LoginRequest, string>
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IJwtSettings _jwtSettings;
+
+    public LoginCommandHandler(IValidator<LoginRequest> validator, IMapper mapper, UserManager<ApplicationUser> userManager, IJwtSettings jwtSettings)
+        : base(validator, mapper)
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IJwtSettings _jwtSettings;
+        _userManager = userManager;
+        _jwtSettings = jwtSettings;
+    }
 
-        public LoginCommandHandler(IValidator<LoginRequest> validator, IMapper mapper, UserManager<ApplicationUser> userManager, IJwtSettings jwtSettings) 
-            : base(validator, mapper)
+    protected override async Task<TokenResult> HandleImpl(LoginRequest request, CancellationToken cancellationToken)
+    {
+        ApplicationUser user = await _userManager.FindByNameAsync(request.UserName);
+
+        if (user == null)
+            throw new InvalidUsernameOrPasswordException();
+
+        bool isPwdValid = await _userManager.CheckPasswordAsync(user, request.Password);
+        if (!isPwdValid)
+            throw new InvalidUsernameOrPasswordException();
+
+        var encodedJwt = await GenerateTokenAsync(user);
+
+        return new TokenResult { Token = encodedJwt };
+    }
+
+    private async Task<string> GenerateTokenAsync(ApplicationUser user)
+    {
+        var now = DateTime.UtcNow;
+        List<Claim> claims = new()
         {
-            _userManager = userManager;
-            _jwtSettings = jwtSettings;
-        }
+            new Claim(CustomClaimTypes.UserId, user.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
+        };
 
-        protected override async Task<string> HandleImpl(LoginRequest request, CancellationToken cancellationToken)
-        {
-            ApplicationUser user = await _userManager.FindByNameAsync(request.UserName);
+        var userClaims = await _userManager.GetClaimsAsync(user);
+        claims.AddRange(userClaims);
 
-            if (user == null)
-                throw new InvalidUsernameOrPasswordException();
+        var secretKey = _jwtSettings.Key;
+        var issuer = _jwtSettings.Issuer;
+        var audience = _jwtSettings.Audience;
+        var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+        var expiration = TimeSpan.FromMinutes(_jwtSettings.ExpirationTimeInMinutes);
 
-            bool isPwdValid = await _userManager.CheckPasswordAsync(user, request.Password);
-            if (!isPwdValid)
-                throw new InvalidUsernameOrPasswordException();
+        var jwt = new JwtSecurityToken(
+            issuer: issuer,
+            audience: audience,
+            claims: claims,
+            notBefore: now,
+            expires: now.Add(expiration),
+            signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256));
 
-            var encodedJwt = await GenerateTokenAsync(user);
+        var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            return encodedJwt;
-        }
-
-        private async Task<string> GenerateTokenAsync(ApplicationUser user)
-        {
-            var now = DateTime.UtcNow;
-            List<Claim> claims = new()
-            {
-                new Claim(CustomClaimTypes.UserId, user.Id.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
-            };
-
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            claims.AddRange(userClaims);
-
-            var secretKey = _jwtSettings.Key;
-            var issuer = _jwtSettings.Issuer;
-            var audience = _jwtSettings.Audience;
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
-            var expiration = TimeSpan.FromMinutes(_jwtSettings.ExpirationTimeInMinutes);
-
-            var jwt = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
-                claims: claims,
-                notBefore: now,
-                expires: now.Add(expiration),
-                signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256));
-
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            return encodedJwt;
-        }
+        return encodedJwt;
     }
 }

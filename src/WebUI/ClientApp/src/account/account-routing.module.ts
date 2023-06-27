@@ -13,13 +13,11 @@ import { AccountComponent } from './account.component';
                     {
                         path: 'login',
                         loadChildren: () => import('./login/login.module').then((m) => m.LoginModule),
-                        // canActivate: [AccountRouteGuard],
                     },
-                    // {
-                    //     path: 'register',
-                    //     loadChildren: () => import('./register/register.module').then((m) => m.RegisterModule),
-                    //     canActivate: [AccountRouteGuard],
-                    // },
+                    {
+                        path: 'register',
+                        loadChildren: () => import('./register/register.module').then((m) => m.RegisterModule)
+                    },
                     
                     { path: '**', redirectTo: 'login' },
                 ],

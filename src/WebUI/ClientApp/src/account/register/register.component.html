@@ -1,0 +1,49 @@
+﻿<div [@routerTransition]>
+  <h4 class="text-center mb-3">{{ "Register" | transloco }}</h4>
+  <form autocomplete="off" #registerForm="ngForm" (ngSubmit)="save()">
+    <div class="p-field mb-3">
+      <span class="p-float-label p-input-icon-right w-100 required">
+        <i class="pi pi-user"></i>
+        <input type="text" pInputText id="userNameOrEmailAddress" class="w-100" name="userNameOrEmailAddress"
+          [(ngModel)]="model.userNameOrEmailAddress" required maxlength="256"
+          #userNameOrEmailAddressInput="ngModel"
+          [ngClass]="{ 'ng-invalid ng-dirty': isFormCtrlInvalid(userNameOrEmailAddressInput) }">
+        <label for="userNameOrEmailAddress">{{'Username' | transloco}}</label>
+      </span>
+      <validation-messages [formCtrl]="userNameOrEmailAddressInput">
+      </validation-messages>
+    </div>
+
+    <div class="p-field mb-3">
+      <span class="p-float-label p-input-icon-right w-100 required">
+        <i class="pi pi-lock"></i>
+        <input type="password" pInputText id="password" class="w-100" name="password"
+          [(ngModel)]="model.password" required maxlength="32"
+          #passwordInput="ngModel"
+          [ngClass]="{ 'ng-invalid ng-dirty': isFormCtrlInvalid(passwordInput) }">
+        <label for="password">{{'Password' | transloco}}</label>
+      </span>
+      <validation-messages [formCtrl]="passwordInput">
+      </validation-messages>
+    </div>
+
+    <div class="p-field mb-3">
+      <span class="p-float-label p-input-icon-right w-100 required">
+        <i class="pi pi-lock"></i>
+        <input type="password" pInputText id="passwordConfirmation" class="w-100" name="passwordConfirmation"
+          [(ngModel)]="model.passwordConfirmation" required maxlength="32"
+          #passwordConfirmationInput="ngModel"
+          [ngClass]="{ 'ng-invalid ng-dirty': isFormCtrlInvalid(passwordConfirmationInput) }">
+        <label for="passwordConfirmation">{{'PasswordConfirmation' | transloco}}</label>
+      </span>
+      <validation-messages [formCtrl]="passwordConfirmationInput">
+      </validation-messages>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <p-button styleClass="p-button-secondary" [disabled]="saving" icon="pi pi-arrow-left" label="{{'Back' | transloco}}" [routerLink]="['/account/login']"></p-button>
+
+      <p-button type="submit" styleClass="p-button-primary" [disabled]="!registerForm.form.valid || saving" icon="pi pi-plus" label="{{'Register' | transloco}}"></p-button>
+    </div>
+  </form>
+</div>

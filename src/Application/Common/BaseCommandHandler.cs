@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Common
 {
-    internal abstract class BaseCommandHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public abstract class BaseCommandHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
         protected readonly IValidator<TRequest> _validator;
         protected readonly IMapper _mapper;

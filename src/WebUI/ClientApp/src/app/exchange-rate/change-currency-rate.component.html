@@ -1,0 +1,48 @@
+<form #form="ngForm" (ngSubmit)="save()" autocomplete="off">
+
+    <div class="p-2 mb-1">
+        <span class="p-float-label">
+            <p-dropdown id="targetCurrency" name="targetCurrency" [options]="currencyList" autoDisplayFirst="false"
+                [(ngModel)]="record.targetCurrency" required styleClass="w-100" #targetCurrencyInput="ngModel"
+                appendTo="body"
+                [ngClass]="{ 'ng-invalid ng-dirty': isFormCtrlInvalid(targetCurrencyInput) }"></p-dropdown>
+            <label for="targetCurrency">{{"TargetCurrency" | transloco}}</label>
+        </span>
+        <validation-messages [formCtrl]="targetCurrencyInput">
+        </validation-messages>
+    </div>
+
+    <div class="p-2">
+        <span class="p-float-label">
+            <p-inputNumber id="amount" name="amount" [(ngModel)]="record.amount" inputId="amount" mode="decimal"
+                [minFractionDigits]="0" [maxFractionDigits]="0" required inputStyleClass="w-100" #amountInput="ngModel"
+                [ngClass]="{ 'ng-invalid ng-dirty': isFormCtrlInvalid(amountInput) }" suffix=" HUF"> </p-inputNumber>
+            <label for="amount">{{"HUFAmount" | transloco}}</label>
+        </span>
+        <validation-messages [formCtrl]="amountInput">
+        </validation-messages>
+    </div>
+
+    <div *ngIf="result" class="p-2">
+        <p-divider type="dashed"></p-divider>
+        <h6>{{"ChangeResult" | transloco}}</h6>
+
+        <div class="mt-2">
+            <span class="p-float-label">
+                <p-inputNumber id="amountResult" [(ngModel)]="result.amount" inputStyleClass="w-100" readonly="true"
+                    suffix=" {{result.currency}}" [ngModelOptions]="{standalone: true}"> </p-inputNumber>
+                <label htmlFor="amountResult">{{"Amount" | transloco}}</label>
+            </span>
+        </div>
+    </div>
+
+    <p-divider type="dashed"></p-divider>
+
+    <div class="d-flex justify-content-end">
+        <button pButton type="submit" label="{{'Calculate' | transloco}}" icon="pi pi-save"
+            [disabled]="!form.form.valid || saving"></button>
+
+        <button pButton type="button" class="p-button-secondary" label="{{'Close' | transloco}}" icon="pi pi-times"
+            (click)="close()"></button>
+    </div>
+</form>

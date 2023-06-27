@@ -1,9 +1,8 @@
-﻿using Application.User.Models;
-using MediatR;
+﻿using MediatR;
 
 namespace Application.Identity.Models;
 
-public class LoginRequest : IRequest<string>
+public class LoginRequest : IRequest<TokenResult>
 {
     public required string UserName { get; set; }
 

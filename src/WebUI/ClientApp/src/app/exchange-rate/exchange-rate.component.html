@@ -1,1 +1,59 @@
-Exchange Rate
+<div>
+    <div class="d-flex flex-column flex-column-fluid">
+        <sub-header [title]="'ExchangeRates' | transloco" [description]="'ExchangeRatesHeaderInfo' | transloco">
+            <div role="actions">
+                <button pButton type="button" label="{{'ChangeCurrencyRateFromHUF' | transloco}}" icon="pi pi-euro" (click)="changeFromHUF()"></button>
+
+                <button pButton type="button" icon="pi pi-refresh"
+                    class="p-button-info p-button-outlined p-button-rounded" (click)="getRecords()"></button>
+            </div>
+        </sub-header>
+
+        <div class="container-fluid">
+            <p-card>
+                <div class="row">
+                    <div class="col-12 col-xl-4">
+                        <p-calendar [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" (onSelect)="onRangeDatesSelect()" styleClass="w-100"></p-calendar>
+                    </div>
+                    <div class="col-12 col-xl-3">
+                        <p-multiSelect [options]="currencyList" [(ngModel)]="selectedCurrencies" defaultLabel="{{'SelectCurrencies' | transloco}}" styleClass="w-100" (onChange)="getRecords()"></p-multiSelect>
+                    </div>
+                </div>
+
+                <div>
+                    <p-table #dataTable [value]="primengTableHelper.records" [paginator]="false"
+                        rowGroupMode="subheader" groupRowsBy="date" sortField="date" sortMode="single">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>{{"Currency" | transloco}}</th>
+                                <th>{{"Unit" | transloco}}</th>
+                                <th>{{"RateValue" | transloco}}</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="groupheader" let-day>
+                            <tr pRowGroupHeader>
+                                <td colspan="3">
+                                    <h6 class="ml-2">{{day.date | luxonFormat:'D'}}</h6>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-record>
+                            <tr>
+                                <td>
+                                    {{record.currency}}
+                                </td>
+                                <td>
+                                    {{record.unit}}
+                                </td>
+                                <td>
+                                    {{record.rateValue}}
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+            </p-card>
+        </div>
+    </div>
+</div>
