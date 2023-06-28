@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.User.Models;
 using Application.Identity.Models;
-using WebUI.Configurations;
-using Application.ExchangeRate.Models;
-using Provider.MNB.Types;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 
