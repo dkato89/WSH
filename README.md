@@ -1,4 +1,4 @@
-﻿# WSH - ASP.net és Angular fejlesztési feladat 
+# WSH - ASP.net és Angular fejlesztési feladat 
 
 Ez a projekt egy interjúnak a fejlesztési részéhez készült.
 
