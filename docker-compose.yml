@@ -1,0 +1,20 @@
+version: "3.4"
+
+services:
+    api:
+        container_name: wshdemo_api
+        image: "expression88/wsh-test"
+        ports:
+          - "50085:80"    
+        environment:   
+          - "ConnectionStrings__Default=Server=db;Database=WSH;User=sa;Password=Almafa1.;TrustServerCertificate=True;"
+        restart: on-failure
+        depends_on:
+          - db
+
+    db:
+        container_name: wshdemo_db
+        image: "mcr.microsoft.com/mssql/server:2022-latest"
+        environment:
+            SA_PASSWORD: "Almafa1."
+            ACCEPT_EULA: "Y"

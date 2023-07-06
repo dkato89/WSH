@@ -53,12 +53,17 @@ builder.Services.ConfigureJwtAuthentication(jwtSettings);
 
 builder.Services.AddControllers();
 
+builder.Services.AddSpaStaticFiles(configuration =>
+    configuration.RootPath = "ClientApp/dist");
+
 var logger = new LoggerConfiguration()
   .ReadFrom.Configuration(builder.Configuration)
   .Enrich.FromLogContext()
   .CreateLogger();
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
+
+logger.Information(config.GetConnectionString(AppConsts.ConnectionStringName));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -69,7 +74,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Application.User.Validators
 builder.Services.ConfCors();
 
 var app = builder.Build();
-
+logger.Debug("IsDev: " + app.Environment.IsDevelopment());
 if (app.Environment.IsDevelopment())
 {
     app.UseCors("CorsPolicy");
@@ -81,12 +86,27 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+if (!app.Environment.IsDevelopment())
+    app.UseSpaStaticFiles();
+
 app.UseHttpStatusCodeExceptionMiddleware();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("healthcheck", ()=> Results.Ok("OK"));
+
+app.UseSpa(spa =>
+{
+    spa.Options.SourcePath = "ClientApp";
+
+    if (app.Environment.IsDevelopment())
+    {
+        spa.UseProxyToSpaDevelopmentServer(config["SpaBaseUrl"] ?? "http://localhost:4200");
+    }
+});
 
 app.DbMigrate();
 
